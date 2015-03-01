@@ -23,4 +23,7 @@ Requirments for running the server: <br />
 Running the server: <br />
 manage.py runserver <br />
 default port: 8000 <br />
+Administator info: <br />
+Username: admin <br />
+Password: 1234asdf <br />
 Will make a requirments.txt file soon. <br />
