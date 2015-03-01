@@ -36,7 +36,7 @@ class Migration(migrations.Migration):
             name='Like',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('time', models.DateTimeField(default=b'', auto_now_add=True, null=True, verbose_name=b'Time')),
+                ('time', models.DateTimeField(default=b'2000-01-01 00:00', auto_now_add=True, null=True, verbose_name=b'Time')),
                 ('user', models.ForeignKey(on_delete=django.db.models.deletion.SET_NULL, default=b'', blank=True, to=settings.AUTH_USER_MODEL, null=True, verbose_name=b'User')),
             ],
             options={
