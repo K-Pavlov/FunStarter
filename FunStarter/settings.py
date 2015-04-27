@@ -3,8 +3,9 @@ Django settings for FunStarter project.
 """
 
 from os import path
+import os
 PROJECT_ROOT = path.dirname(path.abspath(path.dirname(__file__)))
-
+DIRNAME = os.path.dirname(__file__)
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
@@ -57,14 +58,8 @@ USE_L10N = True
 # If you set this to False, Django will not use timezone-aware datetimes.
 USE_TZ = True
 
-# Absolute filesystem path to the directory that will hold user-uploaded files.
-# Example: "/home/media/media.lawrence.com/media/"
-MEDIA_ROOT = ''
-
-# URL that handles the media served from MEDIA_ROOT. Make sure to use a
-# trailing slash.
-# Examples: "http://media.lawrence.com/media/", "http://example.com/media/"
-MEDIA_URL = ''
+MEDIA_ROOT = os.path.join(DIRNAME, '..', 'media')
+MEDIA_URL = '/media/'
 
 # Absolute path to the directory static files should be collected to.
 # Don't put anything in this directory yourself; store your static files
@@ -117,10 +112,7 @@ ROOT_URLCONF = 'FunStarter.urls'
 WSGI_APPLICATION = 'FunStarter.wsgi.application'
 
 TEMPLATE_DIRS = (
-    # Put strings here, like "/home/html/django_templates" or
-    # "C:/www/django/templates".
-    # Always use forward slashes, even on Windows.
-    # Don't forget to use absolute paths, not relative paths.
+    os.path.join(PROJECT_ROOT, 'rest_service', 'static'),
 )
 
 INSTALLED_APPS = (
@@ -134,10 +126,10 @@ INSTALLED_APPS = (
     'rest_framework',
     # Uncomment the next line to enable the admin:
     'django.contrib.admin',
+    'rest_framework.authtoken',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
 )
-
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
 # the site admins on every HTTP 500 error when DEBUG=False.
@@ -180,4 +172,9 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.BasicAuthentication',
         'rest_framework.authentication.SessionAuthentication',
     )
+}
+
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 20
 }
