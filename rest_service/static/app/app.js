@@ -1,4 +1,7 @@
 $(document).ready(function () {
+	crossroads.addRoute('', function () {
+		crossroads.parse('stories/new')
+	})
 	crossroads.addRoute('{type}/new/', function (type) {
 		loadNewest(type);
 	});
@@ -9,6 +12,14 @@ $(document).ready(function () {
 
 	crossroads.addRoute('{type}/view/{id}', function (type, id) {
 		loadSingle(type, id);
+	});
+
+	crossroads.addRoute('create-story', function () {
+		loadStoryCreate();
+	});
+
+	crossroads.addRoute('create-picture', function () {
+
 	});
 
 //	crossroads.routed.add(console.log, console); //log all routes

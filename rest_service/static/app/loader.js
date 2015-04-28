@@ -84,3 +84,19 @@ function loadData (contentType, orderType) {
 		}
 	}
 }
+
+function loadStoryCreate () {
+	$.get('/static/create-story.html', function (data) {
+		$('#changeable-content').html(data)
+			.ready(function () {
+				$('#create-story-form').submit(function () {
+					$.ajax({
+						url: '/api/create-story',
+						data: $('#create-story-form').serialize(),
+						type: 'POST',
+					});
+					return false;
+				});
+			})
+	});
+}

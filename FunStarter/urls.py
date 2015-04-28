@@ -29,5 +29,5 @@ urlpatterns = patterns('',
     url(r'^api/create-story', 'rest_service.views.create_story'),
     url(r'^api/create-picture', 'rest_service.views.create_picture'),
     url(r'^api/register-user', 'rest_service.views.register_user'),    
-    url(r'^api-token-auth/', views.obtain_auth_token)
+    url(r'^api/token-auth/', views.obtain_auth_token)
 ) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

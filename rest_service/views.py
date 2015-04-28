@@ -3,10 +3,11 @@ Definition of views.
 """
 from datetime import datetime
 
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, AnonymousUser
 from django.http import HttpRequest
 from django.shortcuts import render
 from django.template import RequestContext
+from django.views.decorators.csrf import csrf_exempt
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -14,19 +15,30 @@ from rest_framework.response import Response
 from models import Story, Picture
 from serializers import StorySerializer, PictureSerializer, UserSerializer
 
+from django.conf import settings
+from django.contrib.auth import get_user_model
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from rest_framework.authtoken.models import Token
+
+@receiver(post_save, sender=settings.AUTH_USER_MODEL)
+def create_auth_token(sender, instance=None, created=False, **kwargs):
+    if created:
+        Token.objects.create(user=instance)
+
 def index(request):
-    return render(request, 'index.html')
+	return render(request, 'index.html')
 
 @api_view(['GET'])
 def stories(request):
-	stories = Story.objects.all()
+	stories = Story.objects.all().order_by('-time')
 	serializer = StorySerializer(stories, many=True)
 
 	return Response(serializer.data)
 
 @api_view(['GET'])
 def pictures(request):
-	pictures = Picture.objects.all()
+	pictures = Picture.objects.all().order_by('-time')
 	serializer = PictureSerializer(pictures, many=True)
 
 	return Response(serializer.data)
@@ -52,29 +64,43 @@ def create_picture(request):
 
 @api_view(['POST'])
 def create_story(request):
-	if(not request.user):
+	if(not request.user) :
 		return Response(status=status.HTTP_403_FORBIDDEN)
 
+	serialized = StorySerializer(data=request.DATA)
+
+	if(serialized.is_valid):
+		story = Story()
+		story.title = serialized.initial_data['title']
+		story.content = serialized.initial_data['content']
+		story.save()
+
+		return Response(status=status.HTTP_201_CREATED)
+	else:
+		return Response(serialized._errors, status=status.HTTP_400_BAD_REQUEST)
+
+@csrf_exempt
 @api_view(['POST'])
 def create_comment(request):
 	if(not request.user):
 		return Response(status=status.HTTP_403_FORBIDDEN)
 
+@csrf_exempt
 @api_view(['POST'])
 def add_like(request):
 	if(not request.user):
 		return Response(status=status.HTTP_403_FORBIDDEN)
 
+@csrf_exempt
 @api_view(['POST'])
-def create_user(request):
-    serialized = UserSerializer(data=request.DATA)
-    if serialized.is_valid():
-        User.objects.create_user(
-            serialized.init_data['email'],
-            serialized.init_data['username'],
-            serialized.init_data['password']
-        )
-        return Response(serialized.data, status=status.HTTP_201_CREATED)
-    else:
-        return Response(serialized._errors, status=status.HTTP_400_BAD_REQUEST)
-
+def register_user(request):
+	serialized = UserSerializer(data=request.DATA)
+	if serialized.is_valid():
+	    User.objects.create_user(
+	        serialized.initial_data['username'],
+	        serialized.initial_data['email'],
+	        serialized.initial_data['password']
+	    )
+	    return Response(status=status.HTTP_201_CREATED)
+	else:
+	    return Response(serialized._errors, status=status.HTTP_400_BAD_REQUEST)
