@@ -14,7 +14,13 @@ function loadHottest (type, page) {
 function loadSingle (type, id) {
 	if (checkIfValidType(type)) {
 		$.get('api/' + type + '/' + id, function(data) {
-			$.get('/static/view-item.html', function (source) {
+			var path;
+			if(type === TYPES.stories) {
+				path = '/static/view-story.html'
+			} else {
+				path = '/static/view-picture.html'
+			}
+			$.get(path, function (source) {
 				var template = Handlebars.compile(source),
 				    $changeableContent = $('#changeable-content'),
 					results = data,
@@ -30,6 +36,7 @@ function loadSingle (type, id) {
 					date: dateTime.date,
 					time: dateTime.time,
 					comments: results.comments,
+					imageSource: results.image,
 					id: id
 				};
 
@@ -40,7 +47,8 @@ function loadSingle (type, id) {
 						$form.serialize(), 
 						function (data) {
 							var commentDiv = $('<div/>'),
-								usernameDiv = $('<div><strong>' + data.user.username 
+								username = data.user ? data.user.username : 'Anonymous',
+								usernameDiv = $('<div><strong>' + username
 											+ '</strong></div>');
 
 							commentDiv.attr('class', 'comment col-md-12')
@@ -75,7 +83,9 @@ function loadPictures (dataPath) {
 				};
 
 				$html = $(template(context));
-				$contentDiv.append(html);
+				$html.find('.title')
+					.attr('href', '#/' + TYPES.pictures + '/view/' + results[i].id);
+				$contentDiv.append($html);
 			}
 		});
 	});
@@ -125,18 +135,12 @@ function loadStoryCreate () {
 						data: $('#create-story-form').serialize(),
 						type: 'POST',
 					});
-<<<<<<< HEAD
-
-=======
-					
->>>>>>> 7592dd499cd8f0f44efd82cfea882d21963161eb
 					return false;
 				});
 			});
 	});
 }
 
-<<<<<<< HEAD
 function loadData (contentType, orderType) {
 	if (checkIfValidType(contentType)) {
 		var dataPath = 'api/' + contentType;
@@ -165,21 +169,24 @@ function getDateTime (pythonTime) {
 		date: date,
 		time: time,
 	};
-=======
+}
+
 function loadPictureCreate () {
 	$.get('/static/create-picture.html', function (data) {
 		$('#changeable-content').html(data)
 			.ready(function () {
 				$('#create-picture-form').submit(function () {
+					var formData = new FormData($('#create-picture-form')[0]);
 					$.ajax({
-						url: '/api/create-picture',
-						data: $('#create-picture-form').serialize(),
+						url: '/api/create-picture/',
+						data: formData,
 						type: 'POST',
+						processData: false,
+  						contentType: false,
 					});
 
 					return false;
 				});
 			})
 	});	
->>>>>>> 7592dd499cd8f0f44efd82cfea882d21963161eb
 }

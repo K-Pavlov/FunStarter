@@ -61,22 +61,18 @@ def story(request, id):
 
 @api_view(['POST'])
 def create_picture(request):
-<<<<<<< HEAD
 	token = getToken(request.META)
 	user = getUser(token)
 
 	if(not user):
-=======
-	if(not request.user) :
->>>>>>> 7592dd499cd8f0f44efd82cfea882d21963161eb
 		return Response(status=status.HTTP_403_FORBIDDEN)
+	serialized = PictureSerializer(data=request.DATA)
 
-	serialized = PictureSerializer(data=request.DATA, files=request.FILES)
-
+	image = request.FILES['image']
 	if(serialized.is_valid):
 		picture = Picture()
 		picture.title = serialized.initial_data['title']
-		picture.image = serialized.initial_data['image']
+		picture.image.save(image.name, image)
 		picture.save()
 
 		return Response(status=status.HTTP_201_CREATED)
@@ -167,6 +163,9 @@ def getUser(token):
 		return False
 
 def getToken(request_meta):
-	token = request_meta['HTTP_AUTHORIZATION'].split(' ')[1]
+	try:
+		token = request_meta['HTTP_AUTHORIZATION'].split(' ')[1]
+	except IndexError:
+		return ''
 
 	return token

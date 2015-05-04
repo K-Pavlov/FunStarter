@@ -112,12 +112,7 @@ $(document).ready(function () {
 					}).then(function (data) {
 						authHandler.configureLoggedIn();
 						$.cookie('token', data.token);
-<<<<<<< HEAD
 						$('#auth-modal').modal('hide');
-=======
-						$('#auth-modal').modal('hide');	
-						addLinksLeftNav();
->>>>>>> 7592dd499cd8f0f44efd82cfea882d21963161eb
 					});
 
 					return false;
@@ -141,104 +136,8 @@ $(document).ready(function () {
 	});
 
 	if($.cookie('token')) {
-<<<<<<< HEAD
 		authHandler.configureLoggedIn();
-=======
-		removeLogin();
-		addLinksLeftNav();
->>>>>>> 7592dd499cd8f0f44efd82cfea882d21963161eb
 	} else {
 		authHandler.configureLoggedOut();
 	}
-<<<<<<< HEAD
 });
-=======
-});
-
-function addLinksLeftNav () {
-	var storyLink = $('<a/>');
-	storyLink.attr('id', 'story-link')
-		.click(function () {
-			crossroads.parse('/create-story');								
-		})
-		.attr('class', 'list-group-item')
-		.attr('href', '#/create-story')
-		.html('Create story');
-
-	var pictureLink = $('<a/>');
-	pictureLink.attr('id', 'picture-link')
-		.click(function () {
-			crossroads.parse('/create-picture');	
-		})
-		.attr('class', 'list-group-item')
-		.attr('href', '#/create-picture')
-		.html('Create picture');
-
-	$('#main-content .list-group').append(storyLink)
-		.append(pictureLink);
-}
-
-function addLogin () {
-	$('#login-out').html('Login');
-	$('#login-out').off().click(function () {
-		$('#auth-modal').modal('show');
-		return false;
-	});
-
-	$('#register').click(function () {
-		$('#register-modal').modal('show');
-	});
-
-	$('#register').show();
-}
-
-function removeLogin () {
-	$('#login-out').html('Logut');
-	$('#login-out').off().click(function () {
-		logOut();
-		return false;
-	});
-
-	$('#register').hide();
-}
-
-function logOut () {
-	$.cookie('token', '');
-	addLogin();
-	$('#picture-link').remove();
-	$('#story-link').remove();
-}
-
-function setupHeaders () {
-	function csrfSafeMethod(method) {
-	    // these HTTP methods do not require CSRF protection
-	    return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
-	}
-
-	function sameOrigin(url) {
-	    // test that a given url is a same-origin URL
-	    // url could be relative or scheme relative or absolute
-	    var host = document.location.host; // host + port
-	    var protocol = document.location.protocol;
-	    var sr_origin = '//' + host;
-	    var origin = protocol + sr_origin;
-	    // Allow absolute or scheme relative URLs to same origin
-	    return (url == origin || url.slice(0, origin.length + 1) == origin + '/') ||
-	        (url == sr_origin || url.slice(0, sr_origin.length + 1) == sr_origin + '/') ||
-	        // or any other URL that isn't scheme relative or absolute i.e relative.
-	        !(/^(\/\/|http:|https:).*/.test(url));
-	}
-
-	$.ajaxSetup({
-	    beforeSend: function(xhr, settings) {
-	        if (!csrfSafeMethod(settings.type) && sameOrigin(settings.url)) {
-	            // Send the token to same-origin, relative URLs only.
-	            // Send the token only if the method warrants CSRF protection
-	            // Using the CSRFToken value acquired earlier
-	            xhr.setRequestHeader("X-CSRFToken", $.cookie('csrftoken'));
-	            xhr.setRequestHeader('Authorization', 'Token ' + $.cookie('token'));
-	        }
-	    }
-	});
-}
->>>>>>> 7592dd499cd8f0f44efd82cfea882d21963161eb
