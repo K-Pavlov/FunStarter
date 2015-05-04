@@ -19,7 +19,7 @@ $(document).ready(function () {
 	});
 
 	crossroads.addRoute('create-picture', function () {
-
+		loadPictureCreate();
 	});
 
 //	crossroads.routed.add(console.log, console); //log all routes

@@ -59,8 +59,20 @@ def story(request, id):
 
 @api_view(['POST'])
 def create_picture(request):
-	if(not request.user):
+	if(not request.user) :
 		return Response(status=status.HTTP_403_FORBIDDEN)
+
+	serialized = PictureSerializer(data=request.DATA, files=request.FILES)
+
+	if(serialized.is_valid):
+		picture = Picture()
+		picture.title = serialized.initial_data['title']
+		picture.image = serialized.initial_data['image']
+		picture.save()
+
+		return Response(status=status.HTTP_201_CREATED)
+	else:
+		return Response(serialized._errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['POST'])
 def create_story(request):

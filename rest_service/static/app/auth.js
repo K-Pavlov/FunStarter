@@ -11,28 +11,8 @@ $(document).ready(function () {
 					}).then(function (data) {
 						removeLogin();
 						$.cookie('token', data.token);
-						$('#auth-modal').modal('hide');
-
-						var storyLink = $('<a/>');
-						storyLink.attr('id', 'story-link')
-							.click(function () {
-								crossroads.parse('/create-story');								
-							})
-							.attr('class', 'list-group-item')
-							.attr('href', '#/create-story')
-							.html('Create story');
-
-						var pictureLink = $('<a/>');
-						pictureLink.attr('id', 'picture-link')
-							.click(function () {
-								crossroads.parse('/create-picture');	
-							})
-							.attr('class', 'list-group-item')
-							.attr('href', '#/create-picture')
-							.html('Create picture');
-
-						$('#main-content .list-group').append(storyLink)
-							.append(pictureLink);
+						$('#auth-modal').modal('hide');	
+						addLinksLeftNav();
 					});
 
 					return false;
@@ -57,10 +37,34 @@ $(document).ready(function () {
 
 	if($.cookie('token')) {
 		removeLogin();
+		addLinksLeftNav();
 	} else {
 		addLogin();
 	}
 });
+
+function addLinksLeftNav () {
+	var storyLink = $('<a/>');
+	storyLink.attr('id', 'story-link')
+		.click(function () {
+			crossroads.parse('/create-story');								
+		})
+		.attr('class', 'list-group-item')
+		.attr('href', '#/create-story')
+		.html('Create story');
+
+	var pictureLink = $('<a/>');
+	pictureLink.attr('id', 'picture-link')
+		.click(function () {
+			crossroads.parse('/create-picture');	
+		})
+		.attr('class', 'list-group-item')
+		.attr('href', '#/create-picture')
+		.html('Create picture');
+
+	$('#main-content .list-group').append(storyLink)
+		.append(pictureLink);
+}
 
 function addLogin () {
 	$('#login-out').html('Login');
@@ -119,7 +123,7 @@ function setupHeaders () {
 	            // Send the token to same-origin, relative URLs only.
 	            // Send the token only if the method warrants CSRF protection
 	            // Using the CSRFToken value acquired earlier
-//	            xhr.setRequestHeader("X-CSRFToken", $.cookie('csrftoken'));
+	            xhr.setRequestHeader("X-CSRFToken", $.cookie('csrftoken'));
 	            xhr.setRequestHeader('Authorization', 'Token ' + $.cookie('token'));
 	        }
 	    }

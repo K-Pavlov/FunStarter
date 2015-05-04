@@ -95,8 +95,26 @@ function loadStoryCreate () {
 						data: $('#create-story-form').serialize(),
 						type: 'POST',
 					});
+					
 					return false;
 				});
 			})
 	});
+}
+
+function loadPictureCreate () {
+	$.get('/static/create-picture.html', function (data) {
+		$('#changeable-content').html(data)
+			.ready(function () {
+				$('#create-picture-form').submit(function () {
+					$.ajax({
+						url: '/api/create-picture',
+						data: $('#create-picture-form').serialize(),
+						type: 'POST',
+					});
+
+					return false;
+				});
+			})
+	});	
 }
