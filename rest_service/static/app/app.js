@@ -35,4 +35,8 @@ $(document).ready(function () {
 	function parseHash(newHash, oldHash){
 	  crossroads.parse(newHash);
 	}
+
+	$('#link-back-top').click(function () {
+		$("html, body").animate({ scrollTop: 0 }, 500);
+	});
 });

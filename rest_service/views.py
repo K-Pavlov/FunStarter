@@ -12,8 +12,10 @@ from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
-from models import Story, Picture
-from serializers import StorySerializer, PictureSerializer, UserSerializer
+from models import Story, Picture, Comment
+from serializers import StorySerializer, PictureSerializer,\
+						UserSerializer, PictureCommentsSerializer, \
+						StoryCommentSerializer, CommentSerializer
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
@@ -53,13 +55,20 @@ def picture(request, id):
 @api_view(['GET'])
 def story(request, id):
 	story = Story.objects.get(pk=id)
-	serializer = StorySerializer(story)
-
+	serializer = StoryCommentSerializer(story)
+	print serializer.data
 	return Response(serializer.data)
 
 @api_view(['POST'])
 def create_picture(request):
+<<<<<<< HEAD
+	token = getToken(request.META)
+	user = getUser(token)
+
+	if(not user):
+=======
 	if(not request.user) :
+>>>>>>> 7592dd499cd8f0f44efd82cfea882d21963161eb
 		return Response(status=status.HTTP_403_FORBIDDEN)
 
 	serialized = PictureSerializer(data=request.DATA, files=request.FILES)
@@ -76,7 +85,10 @@ def create_picture(request):
 
 @api_view(['POST'])
 def create_story(request):
-	if(not request.user) :
+	token = getToken(request.META)
+	user = getUser(token)
+
+	if(not user):
 		return Response(status=status.HTTP_403_FORBIDDEN)
 
 	serialized = StorySerializer(data=request.DATA)
@@ -91,19 +103,22 @@ def create_story(request):
 	else:
 		return Response(serialized._errors, status=status.HTTP_400_BAD_REQUEST)
 
-@csrf_exempt
 @api_view(['POST'])
 def create_comment(request):
-	if(not request.user):
+	token = getToken(request.META)
+	user = getUser(token)
+
+	if(not user):
 		return Response(status=status.HTTP_403_FORBIDDEN)
 
-@csrf_exempt
 @api_view(['POST'])
 def add_like(request):
-	if(not request.user):
+	token = getToken(request.META)
+	user = getUser(token)
+
+	if(not user):
 		return Response(status=status.HTTP_403_FORBIDDEN)
 
-@csrf_exempt
 @api_view(['POST'])
 def register_user(request):
 	serialized = UserSerializer(data=request.DATA)
@@ -116,3 +131,42 @@ def register_user(request):
 	    return Response(status=status.HTTP_201_CREATED)
 	else:
 	    return Response(serialized._errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['POST'])
+def add_comment(request, data_type, id):
+	token = getToken(request.META)
+	user = getUser(token)
+
+	serialized = CommentSerializer(data=request.DATA)
+
+
+	if(serialized.is_valid):
+		comment = Comment()
+		comment.content = serialized.initial_data['content']
+		if(user):
+			comment.user = user
+
+		if(data_type == 'stories'):
+			comment.story = Story.objects.get(pk=id)
+		elif(data_type == 'pictures'):
+			comment.picture = Picture.objects.get(pk=id)
+
+		comment.save()
+
+		serialized = CommentSerializer(comment)
+		return Response(serialized.data, status=status.HTTP_201_CREATED)
+	else:
+	    return Response(serialized._errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+def getUser(token):
+	try:
+		return Token.objects.get(key=token).user
+	except Token.DoesNotExist:
+		return False
+
+def getToken(request_meta):
+	token = request_meta['HTTP_AUTHORIZATION'].split(' ')[1]
+
+	return token

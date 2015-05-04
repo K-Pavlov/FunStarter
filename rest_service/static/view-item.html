@@ -1,0 +1,33 @@
+<div id="{{id}}" class="col-md-12 story-holder">
+	<div class="row">
+		<div class="col-md-6">
+	    	<a class="title"><h2>{{ title }}</h2></a>
+	    </div>
+	    <div class="col-md-6">
+	    	<span class="pull-right">Created on {{date}} {{time}}</span>
+	    </div>
+    </div>
+    <p>{{ text }}</p>
+    <a class="btn btn-default glyphicon glyphicon-hand-up"></a>
+  	<a class="btn btn-default glyphicon glyphicon-hand-down"></a>
+</div>
+<div class="col-md-12" id="comment-div">
+	<form id="comment-form" class="form-horizontal" role="form" method="post" action="index.php">
+	    <div class="form-group">
+	        <div class="col-sm-10">
+	            <textarea class="form-control" rows="2" name="content" placeholder="Write a comment"></textarea>
+	        </div>
+	        <div class="col-sm-1">
+    	    <button class="btn btn-info" type="submit">Send</button>
+    	    </div>
+	    </div>
+	</form>
+</div>
+<div id="comments">
+	{{#each comments}}
+	<div class="comment col-md-12">
+		<div><strong>{{this.user.username}}</strong></div>
+		{{this.content}}
+	</div>
+	{{/each}}
+</div>

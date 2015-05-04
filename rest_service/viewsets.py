@@ -30,16 +30,17 @@ class LikeViewSet(viewsets.ModelViewSet):
     serializer_class = LikeSerializer
 
 class RouteConfig:
-    def __init__(self):
-        self.router = routers.DefaultRouter()
-
-    def register_routes(self):
-        self.router.register(r'users', UserViewSet)
-        self.router.register(r'categories', CategoryViewSet)
-        self.router.register(r'stories', StoryViewSet)
-        self.router.register(r'pictures', PictureViewSet)
-        self.router.register(r'comments', CommentViewSet)
-        self.router.register(r'likes', LikeViewSet)
-
-    def get_router(self): 
-        return self.router
+    pass
+#    def __init__(self):
+#        self.router = routers.DefaultRouter()
+#
+#    def register_routes(self):
+#        self.router.register(r'users', UserViewSet)
+#        self.router.register(r'categories', CategoryViewSet)
+#        self.router.register(r'stories', StoryViewSet)
+#        self.router.register(r'pictures', PictureViewSet)
+#        self.router.register(r'comments', CommentViewSet)
+#        self.router.register(r'likes', LikeViewSet)
+#
+#    def get_router(self): 
+#        return self.router

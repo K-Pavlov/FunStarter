@@ -27,19 +27,30 @@ class CategorySerializer(serializers.ModelSerializer):
         fields = ('name', )
 
 class PictureSerializer(serializers.ModelSerializer):
-    category = CategorySerializer(read_only=True)
-    comments = CommentSerializer(read_only=True, many=True)
     user = UserSerializer(read_only=True)
 
     class Meta:
         model = Picture
-        fields = ('title', 'likes', 'image', 'category', 'user', 'time', 'comments')
+        fields = ('id', 'title', 'likes', 'image', 'user', 'time')
+
+class PictureCommentsSerializer(serializers.ModelSerializer):
+    comments = CommentSerializer(read_only=True, many=True)
+
+    class Meta:
+        model = Picture
+        fields = ('comments')
+
 
 class StorySerializer(serializers.ModelSerializer):
-    category = CategorySerializer(read_only=True)
     user = UserSerializer(read_only=True)
+
+    class Meta:
+        model = Story
+        fields = ('id', 'title', 'likes', 'content', 'user', 'time',)
+
+class StoryCommentSerializer(serializers.ModelSerializer):
     comments = CommentSerializer(read_only=True, many=True)
 
     class Meta:
         model = Story
-        fields = ('title', 'likes', 'content', 'category', 'user', 'time', 'comments')
+        fields = ('id', 'title', 'likes', 'content', 'user', 'time', 'comments', )
